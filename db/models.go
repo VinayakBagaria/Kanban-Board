@@ -31,12 +31,13 @@ type Issue struct {
 	Status     IssueStatus `json:"status"`
 	OrderIndex int         `json:"order_index"`
 	Priority   Priority    `json:"priority"`
-	Assignee   User        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Assignee   *User       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 type User struct {
-	ID   uuid.UUID `json:"id" gorm:"primary_key"`
-	Name string    `json:"name"`
+	ID     uuid.UUID `json:"id" gorm:"primary_key"`
+	Name   string    `json:"name"`
+	Avatar *string   `json:"string"`
 }
 
 type Label struct {
