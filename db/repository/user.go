@@ -18,8 +18,8 @@ func NewUserRepository(dbHandler *gorm.DB) UserRepository {
 	return &userRepository{db: dbHandler}
 }
 
-func (u *userRepository) GetAll() []*db.User {
+func (r *userRepository) GetAll() []*db.User {
 	var users []*db.User
-	u.db.Find(&users)
+	r.db.Find(&users)
 	return users
 }
