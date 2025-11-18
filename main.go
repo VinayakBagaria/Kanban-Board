@@ -1,8 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"kanban-board/api/resthandlers"
+	"kanban-board/api/routes"
 	"kanban-board/config"
+	"kanban-board/db"
 	"log"
+	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,4 +25,23 @@ func main() {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 
+	// Initialize db
+	dbConfig := db.NewConfiguration()
+	dbHandler, err := db.NewConnection(dbConfig)
+	if err != nil {
+		log.Panicln(err)
+	}
+
+	serverHandler := resthandlers.NewServerHandler()
+	serverRoutesList := routes.NewServerRouteList(serverHandler)
+
+	routes.Install(router, serverRoutesList)
+
+	apiPort, err := strconv.Atoi(config.GetConfigValue("server.port"))
+	if err != nil {
+		log.Fatalln("Unable to parse api port")
+	}
+
+	log.Printf("API service running on port: %d", apiPort)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", apiPort), router))
 }

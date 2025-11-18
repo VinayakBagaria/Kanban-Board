@@ -21,6 +21,7 @@ func NewConnection(cfg Configuration) (*gorm.DB, error) {
 
 	log.Println("Successfully connected to db")
 	db.Logger = logger.Default.LogMode(logger.Info)
+	db.AutoMigrate(&Issue{}, &User{}, &Label{}, &IssueLabel{})
 
 	return db, nil
 }
