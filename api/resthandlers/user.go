@@ -9,7 +9,7 @@ import (
 )
 
 type UserHandler interface {
-	GetUser(*gin.Context)
+	GetUsers(*gin.Context)
 }
 
 type userHandler struct {
@@ -20,7 +20,7 @@ func NewUserHandler(svc services.UserService) UserHandler {
 	return &userHandler{svc}
 }
 
-func (h *userHandler) GetUser(c *gin.Context) {
+func (h *userHandler) GetUsers(c *gin.Context) {
 	users := h.svc.GetAll()
 	restutil.WriteAsJson(c, http.StatusOK, users)
 }

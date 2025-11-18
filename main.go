@@ -6,6 +6,8 @@ import (
 	"kanban-board/api/routes"
 	"kanban-board/config"
 	"kanban-board/db"
+	"kanban-board/db/repository"
+	"kanban-board/services"
 	"log"
 	"net/http"
 	"strconv"
@@ -32,10 +34,16 @@ func main() {
 		log.Panicln(err)
 	}
 
-	serverHandler := resthandlers.NewServerHandler()
-	serverRoutesList := routes.NewServerRouteList(serverHandler)
+	userRepository := repository.NewUserRepository(dbHandler)
+	userService := services.NewUserService(userRepository)
+	userHandler := resthandlers.NewUserHandler(userService)
+	userRoutes := routes.NewUserRoutes(userHandler)
 
-	routes.Install(router, serverRoutesList)
+	serverHandler := resthandlers.NewServerHandler()
+	serverRoutes := routes.NewServerRoutes(serverHandler)
+
+	routes.Install(router, userRoutes)
+	routes.Install(router, serverRoutes)
 
 	apiPort, err := strconv.Atoi(config.GetConfigValue("server.port"))
 	if err != nil {
