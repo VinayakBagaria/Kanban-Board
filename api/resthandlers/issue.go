@@ -1,6 +1,7 @@
 package resthandlers
 
 import (
+	"encoding/json"
 	"kanban-board/api/restutil"
 	"kanban-board/dto"
 	"kanban-board/services"
@@ -12,6 +13,7 @@ import (
 
 type IssueHandler interface {
 	GetIssues(*gin.Context)
+	CreateIssue(*gin.Context)
 }
 
 type issueHandler struct {
@@ -56,4 +58,34 @@ func (h *issueHandler) GetIssues(c *gin.Context) {
 	}
 
 	restutil.WriteAsJson(c, http.StatusOK, resp)
+}
+
+func (h *issueHandler) CreateIssue(c *gin.Context) {
+	var req dto.CreateIssueRequest
+
+	// Read the raw body
+	bodyBytes, err := c.GetRawData()
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	// Parse JSON to map for cleaning
+	var rawData map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &rawData); err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	newIssue, err := h.svc.CreateIssue(req)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		return
+	}
+	restutil.WriteAsJson(c, http.StatusOK, newIssue)
 }

@@ -4,11 +4,13 @@ import (
 	"kanban-board/db"
 	"kanban-board/dto"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type IssueRepository interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
+	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
 }
 
 type issueRepository struct {
@@ -54,4 +56,42 @@ func (r *issueRepository) GetAll(req dto.GetIssueListRequest) (*dto.IssueListRes
 	resp.Data = issues
 	resp.Total = count
 	return resp, nil
+}
+
+func (r *issueRepository) getMaxOrder(status db.IssueStatus) int {
+	var maxIndex int
+	r.db.Model(&db.Issue{}).
+		Where("status = ?", status).
+		Select("COALESCE(MAX(order_index), -1)").
+		Scan(&maxIndex)
+	return maxIndex
+}
+
+func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error) {
+	maxOrder := r.getMaxOrder(req.Status)
+
+	issue := db.Issue{
+		ID:         uuid.New(),
+		Status:     req.Status,
+		OrderIndex: maxOrder + 1,
+		Priority:   req.Priority,
+		AssigneeId: req.AssigneeID,
+	}
+
+	for _, id := range req.Labels {
+		issue.Labels = append(issue.Labels, db.Label{ID: id})
+	}
+
+	if err := r.db.Create(&issue).Error; err != nil {
+		return nil, err
+	}
+
+	// --- Reload the issue with nested assignee + labels ---
+	var out *dto.IssueWithRelations
+	err := r.db.Model(&dto.IssueWithRelations{}).
+		Preload("Assignee").
+		Preload("Labels").
+		Where("id = ?", issue.ID).
+		First(&out).Error
+	return out, err
 }

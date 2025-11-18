@@ -2,6 +2,8 @@ package dto
 
 import (
 	"kanban-board/db"
+
+	"github.com/google/uuid"
 )
 
 type GetIssueListRequest struct {
@@ -11,6 +13,15 @@ type GetIssueListRequest struct {
 	Priorities []string
 	Page       int
 	PageSize   int
+}
+
+type CreateIssueRequest struct {
+	Title       string         `json:"title" binding:"required"`
+	Description string         `json:"description"`
+	Status      db.IssueStatus `json:"status"`
+	Priority    db.Priority    `json:"priority"`
+	AssigneeID  *uuid.UUID     `json:"assignee_id"`
+	Labels      []uuid.UUID    `json:"labels"`
 }
 
 type IssueWithRelations struct {
