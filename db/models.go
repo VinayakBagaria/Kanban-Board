@@ -23,30 +23,33 @@ const (
 	PriorityCritical Priority = "critical"
 )
 
-type Issue struct {
-	ID        uuid.UUID `json:"id" gorm:"primary_key"`
-	CreatedOn int64     `json:"created_on" gorm:"autoCreateTime:milli"`
-	UpdatedOn int64     `json:"update_on" gorm:"autoUpateTime:milli"`
-
-	Status     IssueStatus `json:"status"`
-	OrderIndex int         `json:"order_index"`
-	Priority   Priority    `json:"priority"`
-	Assignee   *User       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-}
-
 type User struct {
-	ID     uuid.UUID `json:"id" gorm:"primary_key"`
+	ID     uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	Name   string    `json:"name"`
 	Avatar *string   `json:"string"`
 }
 
+type Issue struct {
+	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
+	CreatedOn int64     `json:"created_on" gorm:"autoCreateTime:milli"`
+	UpdatedOn int64     `json:"update_on" gorm:"autoUpdateTime:milli"`
+
+	Status     IssueStatus `json:"status"`
+	OrderIndex int         `json:"order_index"`
+	Priority   Priority    `json:"priority"`
+	AssigneeId *uuid.UUID  `json:"assignee_id"`
+	Assignee   *User       `gorm:"foreignKey:AssigneeId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
+
 type Label struct {
-	ID    uuid.UUID `json:"id" gorm:"primary_key"`
+	ID    uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	Name  string    `json:"name"`
 	Color string    `json:"color"`
 }
 
 type IssueLabel struct {
-	Issue Issue `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Label Label `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	IssueId uuid.UUID
+	LabelId uuid.UUID
+	Issue   Issue `gorm:"foreignKey:IssueId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Label   Label `gorm:"foreignKey:LabelId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
