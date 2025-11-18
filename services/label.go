@@ -17,6 +17,6 @@ func NewLabelService(repository repository.LabelRepository) LabelService {
 	return &labelService{repository}
 }
 
-func (u *labelService) GetAll() []*db.Label {
-	return u.repository.GetAll()
+func (s *labelService) GetAll() []*db.Label {
+	return s.repository.GetAll()
 }

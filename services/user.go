@@ -17,6 +17,6 @@ func NewUserService(repository repository.UserRepository) UserService {
 	return &userService{repository}
 }
 
-func (u *userService) GetAll() []*db.User {
-	return u.repository.GetAll()
+func (s *userService) GetAll() []*db.User {
+	return s.repository.GetAll()
 }

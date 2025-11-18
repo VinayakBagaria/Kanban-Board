@@ -44,11 +44,17 @@ func main() {
 	labelHandler := resthandlers.NewLabelHandler(labelService)
 	labelRoutes := routes.NewLabelRoutes(labelHandler)
 
+	issueRepository := repository.NewIssueRepository(dbHandler)
+	issueService := services.NewIssueService(issueRepository)
+	issueHandler := resthandlers.NewIssueHandler(issueService)
+	issueRoutes := routes.NewIssueRoutes(issueHandler)
+
 	serverHandler := resthandlers.NewServerHandler()
 	serverRoutes := routes.NewServerRoutes(serverHandler)
 
 	routes.Install(router, userRoutes)
 	routes.Install(router, labelRoutes)
+	routes.Install(router, issueRoutes)
 	routes.Install(router, serverRoutes)
 
 	apiPort, err := strconv.Atoi(config.GetConfigValue("server.port"))
