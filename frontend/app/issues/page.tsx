@@ -1,5 +1,6 @@
 "use client";
 
+import KanbanProvider from "@/components/KanbanBoard/KanbanProvider";
 import { getIssues } from "@/services/issues";
 import { useQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
@@ -21,8 +22,8 @@ const IssuesList = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      {issues.length}
+    <div className="min-h-screen">
+      <KanbanProvider issues={issues} />
     </div>
   );
 };

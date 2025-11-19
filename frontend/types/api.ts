@@ -1,10 +1,11 @@
-export type IssueStatus =
-  | "Backlog"
-  | "Todo"
-  | "InProgress"
-  | "Done"
-  | "Canceled";
-export type Priority = "Low" | "Med" | "High" | "Critical";
+export type IssueStatusType =
+  | "backlog"
+  | "todo"
+  | "in_progress"
+  | "done"
+  | "canceled";
+
+export type PriorityType = "low" | "medium" | "high" | "critical";
 
 export interface IIssue {
   id: string;
@@ -12,9 +13,9 @@ export interface IIssue {
   updated_on: number;
   title: string;
   description: string;
-  status: IssueStatus;
+  status: IssueStatusType;
   order_index: number;
-  priority: Priority;
+  priority: PriorityType;
   assignee_id: string;
   assignee: IAssignee;
   labels: Array<ILabel>;
