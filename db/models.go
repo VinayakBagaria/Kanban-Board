@@ -28,9 +28,11 @@ type Issue struct {
 	CreatedOn int64     `json:"created_on" gorm:"autoCreateTime:milli"`
 	UpdatedOn int64     `json:"update_on" gorm:"autoUpdateTime:milli"`
 
-	Status     IssueStatus `json:"status"`
-	OrderIndex int         `json:"order_index"`
-	Priority   Priority    `json:"priority"`
+	Title       string      `json:"title"`
+	Description string      `json:"description"`
+	Status      IssueStatus `json:"status"`
+	OrderIndex  int         `json:"order_index"`
+	Priority    Priority    `json:"priority"`
 
 	AssigneeId *uuid.UUID `json:"assignee_id"`
 	Assignee   *User      `json:"assignee" gorm:"foreignKey:AssigneeId;references:ID"`
@@ -41,7 +43,7 @@ type Issue struct {
 type User struct {
 	ID     uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	Name   string    `json:"name"`
-	Avatar string    `json:"string"`
+	Avatar string    `json:"avatar"`
 }
 
 type Label struct {

@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SeedUser(gormDb *gorm.DB) error {
+func SeedUsers(gormDb *gorm.DB) error {
 	var count int64
 	gormDb.Model(&db.User{}).Count(&count)
 

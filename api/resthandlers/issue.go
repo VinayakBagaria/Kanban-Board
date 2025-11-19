@@ -1,7 +1,6 @@
 package resthandlers
 
 import (
-	"encoding/json"
 	"kanban-board/api/restutil"
 	"kanban-board/dto"
 	"kanban-board/services"
@@ -9,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type IssueHandler interface {
@@ -77,21 +77,7 @@ func (h *issueHandler) GetIssue(c *gin.Context) {
 func (h *issueHandler) CreateIssue(c *gin.Context) {
 	var req dto.CreateIssueRequest
 
-	// Read the raw body
-	bodyBytes, err := c.GetRawData()
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	// Parse JSON to map for cleaning
-	var rawData map[string]interface{}
-	if err := json.Unmarshal(bodyBytes, &rawData); err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindBodyWith(&req, binding.JSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -108,21 +94,7 @@ func (h *issueHandler) CreateIssue(c *gin.Context) {
 func (h *issueHandler) UpdateIssue(c *gin.Context) {
 	var req dto.UpdateIssueRequest
 
-	// Read the raw body
-	bodyBytes, err := c.GetRawData()
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	// Parse JSON to map for cleaning
-	var rawData map[string]interface{}
-	if err := json.Unmarshal(bodyBytes, &rawData); err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindBodyWith(&req, binding.JSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -149,26 +121,12 @@ func (h *issueHandler) DeleteIssue(c *gin.Context) {
 func (h *issueHandler) MoveIssueStatus(c *gin.Context) {
 	var req dto.MoveIssueRequest
 
-	// Read the raw body
-	bodyBytes, err := c.GetRawData()
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	// Parse JSON to map for cleaning
-	var rawData map[string]interface{}
-	if err := json.Unmarshal(bodyBytes, &rawData); err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
-		return
-	}
-
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindBodyWith(&req, binding.JSON); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = h.svc.MoveIssueStatus(c.Param("id"), req)
+	err := h.svc.MoveIssueStatus(c.Param("id"), req)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
