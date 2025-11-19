@@ -10,6 +10,7 @@ type IssueService interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
 	GetIssue(issueId string) (*dto.IssueWithRelations, error)
 	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
+	DeleteIssue(issueId string) error
 	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
 
@@ -37,6 +38,10 @@ func (s *issueService) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRe
 		req.Priority = db.PriorityMedium
 	}
 	return s.repository.CreateIssue(req)
+}
+
+func (s *issueService) DeleteIssue(issueId string) error {
+	return s.repository.DeleteIssue(issueId)
 }
 
 func (s *issueService) MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error {

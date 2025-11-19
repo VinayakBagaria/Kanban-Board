@@ -12,6 +12,7 @@ type IssueRepository interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
 	GetIssue(issueId string) (*dto.IssueWithRelations, error)
 	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
+	DeleteIssue(issueId string) error
 	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
 
@@ -99,6 +100,10 @@ func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWit
 	}
 
 	return r.GetIssue(issue.ID.String())
+}
+
+func (r *issueRepository) DeleteIssue(issueId string) error {
+	return r.db.Model(&db.Issue{}).Where("id = ?", issueId).Delete(&db.Issue{}).Error
 }
 
 func (r *issueRepository) getCurrentStatus(issueId string) (db.IssueStatus, int, error) {

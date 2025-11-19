@@ -15,6 +15,7 @@ type IssueHandler interface {
 	GetIssues(*gin.Context)
 	GetIssue(*gin.Context)
 	CreateIssue(*gin.Context)
+	DeleteIssue(*gin.Context)
 	MoveIssueStatus(*gin.Context)
 }
 
@@ -101,6 +102,16 @@ func (h *issueHandler) CreateIssue(c *gin.Context) {
 	}
 
 	restutil.WriteAsJson(c, http.StatusOK, newIssue)
+}
+
+func (h *issueHandler) DeleteIssue(c *gin.Context) {
+	err := h.svc.DeleteIssue(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, nil)
 }
 
 func (h *issueHandler) MoveIssueStatus(c *gin.Context) {
