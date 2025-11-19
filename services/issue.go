@@ -32,3 +32,7 @@ func (s *issueService) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRe
 	}
 	return s.repository.CreateIssue(req)
 }
+
+func (s *issueService) MoveIssue(issueId string, req dto.MoveIssueRequest) {
+	err := s.repository.MoveIssueStatus(issueId, req)
+}

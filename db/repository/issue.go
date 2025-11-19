@@ -11,6 +11,7 @@ import (
 type IssueRepository interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
 	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
+	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
 
 type issueRepository struct {
@@ -94,4 +95,84 @@ func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWit
 		Where("id = ?", issue.ID).
 		First(&out).Error
 	return out, err
+}
+
+func (r *issueRepository) getCurrentStatus(issueId string) (db.IssueStatus, int, error) {
+	type StatusOrder struct {
+		status     db.IssueStatus
+		orderIndex int
+	}
+
+	var so StatusOrder
+	err := r.db.
+		Model(&db.Issue{}).
+		Select("status, order_index").
+		Where("id = ?", issueId).
+		First(&so).Error
+	return so.status, so.orderIndex, err
+}
+
+func (r *issueRepository) MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error {
+	oldStatus, oldIndex, err := r.getCurrentStatus(issueId)
+	if err != nil {
+		return err
+	}
+
+	newStatus := req.Status
+	newIndex := req.OrderIndex
+
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		// status changed
+		if oldStatus != newStatus {
+			// Shift up issues in old status
+			if err := tx.Model(&db.Issue{}).
+				Where("status = ? AND order_index > ?", oldStatus, oldIndex).
+				Update("order_index", gorm.Expr("order_index - 1")).Error; err != nil {
+				return err
+			}
+
+			// Shift down issues in new status
+			if err := tx.Model(&db.Issue{}).
+				Where("status = ? AND order_index >= ?", newStatus, newIndex).
+				Update("order_index", gorm.Expr("order_index + 1")).Error; err != nil {
+				return err
+			}
+		} else if oldIndex != newIndex {
+			// Same status, order index changed
+			if newIndex > oldIndex {
+				// Move in-between issue up
+				if err := tx.Model(&db.Issue{}).
+					Where("status = ? AND order_index > ? AND order_index <= ?", newStatus, oldIndex, newIndex).
+					Update("order_index", gorm.Expr("order_index - 1")).Error; err != nil {
+					return err
+				}
+			} else {
+				// Move in-between issue down
+				if err := tx.Model(&db.Issue{}).
+					Where("status = ? AND order_index >= ? AND order_index < ?", newStatus, newIndex, oldIndex).
+					Update("order_index", gorm.Expr("order_index + 1")).Error; err != nil {
+					return err
+				}
+			}
+
+			if err := tx.Model(&db.Issue{}).
+				Where("id = ?", issueId).
+				Updates(map[string]interface{}{
+					"order_index": newIndex,
+				}).Error; err != nil {
+				return err
+			}
+		}
+
+		if err := tx.Model(&db.Issue{}).
+			Where("id = ?", issueId).
+			Updates(map[string]interface{}{
+				"status":      newStatus,
+				"order_index": newIndex,
+			}).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

@@ -6,6 +6,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type GeneralErrorResponse struct {
+	Error string         `json:"error"`
+	Meta  map[string]any `json:"meta,omitempty"`
+}
+
 type GetIssueListRequest struct {
 	Statuses   []string
 	Assignee   string
@@ -35,7 +40,7 @@ type IssueListResponse struct {
 	Total int64
 }
 
-type GeneralErrorResponse struct {
-	Error string         `json:"error"`
-	Meta  map[string]any `json:"meta,omitempty"`
+type MoveIssueRequest struct {
+	Status     db.IssueStatus `json:"status" binding:"required"`
+	OrderIndex int            `json:"order_index" binding:"gte=0"`
 }
