@@ -10,6 +10,7 @@ import (
 
 type IssueRepository interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
+	GetIssue(issueId string) (*dto.IssueWithRelations, error)
 	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
 	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
@@ -68,6 +69,16 @@ func (r *issueRepository) getMaxOrder(status db.IssueStatus) int {
 	return maxIndex
 }
 
+func (r *issueRepository) GetIssue(issueId string) (*dto.IssueWithRelations, error) {
+	var out *dto.IssueWithRelations
+	err := r.db.Model(&dto.IssueWithRelations{}).
+		Preload("Assignee").
+		Preload("Labels").
+		Where("id = ?", issueId).
+		First(&out).Error
+	return out, err
+}
+
 func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error) {
 	maxOrder := r.getMaxOrder(req.Status)
 
@@ -87,14 +98,7 @@ func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWit
 		return nil, err
 	}
 
-	// --- Reload the issue with nested assignee + labels ---
-	var out *dto.IssueWithRelations
-	err := r.db.Model(&dto.IssueWithRelations{}).
-		Preload("Assignee").
-		Preload("Labels").
-		Where("id = ?", issue.ID).
-		First(&out).Error
-	return out, err
+	return r.GetIssue(issue.ID.String())
 }
 
 func (r *issueRepository) getCurrentStatus(issueId string) (db.IssueStatus, int, error) {

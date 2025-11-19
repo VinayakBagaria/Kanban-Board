@@ -8,7 +8,9 @@ import (
 
 type IssueService interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
+	GetIssue(issueId string) (*dto.IssueWithRelations, error)
 	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
+	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
 
 type issueService struct {
@@ -23,6 +25,10 @@ func (s *issueService) GetAll(req dto.GetIssueListRequest) (*dto.IssueListRespon
 	return s.repository.GetAll(req)
 }
 
+func (s *issueService) GetIssue(issueId string) (*dto.IssueWithRelations, error) {
+	return s.repository.GetIssue(issueId)
+}
+
 func (s *issueService) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error) {
 	if req.Status == "" {
 		req.Status = db.StatusBacklog
@@ -33,6 +39,6 @@ func (s *issueService) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRe
 	return s.repository.CreateIssue(req)
 }
 
-func (s *issueService) MoveIssue(issueId string, req dto.MoveIssueRequest) {
-	err := s.repository.MoveIssueStatus(issueId, req)
+func (s *issueService) MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error {
+	return s.repository.MoveIssueStatus(issueId, req)
 }

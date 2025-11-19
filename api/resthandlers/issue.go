@@ -13,7 +13,9 @@ import (
 
 type IssueHandler interface {
 	GetIssues(*gin.Context)
+	GetIssue(*gin.Context)
 	CreateIssue(*gin.Context)
+	MoveIssueStatus(*gin.Context)
 }
 
 type issueHandler struct {
@@ -60,6 +62,16 @@ func (h *issueHandler) GetIssues(c *gin.Context) {
 	restutil.WriteAsJson(c, http.StatusOK, resp)
 }
 
+func (h *issueHandler) GetIssue(c *gin.Context) {
+	issueDetails, err := h.svc.GetIssue(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, issueDetails)
+}
+
 func (h *issueHandler) CreateIssue(c *gin.Context) {
 	var req dto.CreateIssueRequest
 
@@ -87,5 +99,37 @@ func (h *issueHandler) CreateIssue(c *gin.Context) {
 		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
 	}
+
 	restutil.WriteAsJson(c, http.StatusOK, newIssue)
+}
+
+func (h *issueHandler) MoveIssueStatus(c *gin.Context) {
+	var req dto.MoveIssueRequest
+
+	// Read the raw body
+	bodyBytes, err := c.GetRawData()
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	// Parse JSON to map for cleaning
+	var rawData map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &rawData); err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = h.svc.MoveIssueStatus(c.Param("id"), req)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, nil)
 }
