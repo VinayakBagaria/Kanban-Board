@@ -6,6 +6,7 @@ import {
 } from "@dnd-kit/sortable";
 import EachIssue from "./EachIssue";
 import { useKanbanContext } from "./context";
+import { useDroppable } from "@dnd-kit/core";
 
 interface IKanbanColumnProps {
   id: IssueStatusType;
@@ -13,11 +14,14 @@ interface IKanbanColumnProps {
 }
 
 const KanbanColumn = ({ id, title }: IKanbanColumnProps) => {
+  const { setNodeRef } = useDroppable({
+    id,
+  });
   const issues = useKanbanContext().issueByStatus?.[id] ?? [];
   const issueIds = issues.map((eachIssue) => eachIssue.id);
 
   return (
-    <Card>
+    <Card ref={setNodeRef}>
       <CardHeader>
         <CardTitle>
           {title} - {issues.length}

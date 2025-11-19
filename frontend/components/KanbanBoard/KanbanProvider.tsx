@@ -4,11 +4,14 @@ import {
   DragOverEvent,
   DragStartEvent,
 } from "@dnd-kit/core";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import KanbanColumn from "./KanbanColumn";
 import { ISSUE_STATUS } from "./constants";
 import { KanbanContext } from "./context";
-import { IIssue, IssueStatusType } from "@/types/api";
+import { IIssue, IMoveIssueRequest, IssueStatusType } from "@/types/api";
+import { arrayMove } from "@dnd-kit/sortable";
+import { useMutation } from "@tanstack/react-query";
+import { moveIssue } from "@/services/issues";
 
 interface IKanbanProviderProps {
   issues: Array<IIssue>;
@@ -16,23 +19,116 @@ interface IKanbanProviderProps {
 
 const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
   const [activeCard, setActiveCard] = useState<string | null>(null);
+  const [issueList, setIssueList] = useState(issues);
+  const moveMutation = useMutation({
+    mutationFn: moveIssue,
+  });
+
+  useEffect(() => {
+    setIssueList(issueList);
+  }, [issueList]);
 
   const issueByStatus = ISSUE_STATUS.reduce(
     (acc, status) => ({
       ...acc,
-      [status.id]: issues.filter((eachIssue) => eachIssue.status === status.id),
+      [status.id]: issueList.filter(
+        (eachIssue) => eachIssue.status === status.id
+      ),
     }),
     {} as Record<IssueStatusType, Array<IIssue>>
   );
 
-  function handleDragStart(event: DragStartEvent) {}
+  function handleDragStart(event: DragStartEvent) {
+    setActiveCard(event.active.id as string);
+  }
 
   function handleDragOver(event: DragOverEvent) {}
 
   function handleDragEnd(event: DragEndEvent) {
-    setActiveCard(null);
     const { active, over } = event;
-    console.log(event);
+    console.log({ active, over });
+    if (!over) {
+      return;
+    }
+
+    const activeIssue = issueList.find(
+      (eachIssue) => eachIssue.id == active.id
+    );
+    if (!activeIssue) {
+      return;
+    }
+
+    console.log({ activeIssue, over });
+
+    // If dropped on a column
+    if (ISSUE_STATUS.find((eachStatus) => eachStatus.id == over.id)) {
+      const newStatusId = over.id as IssueStatusType;
+      const newIndex = issueByStatus[newStatusId].length;
+      const updatedIssues = issueList
+        .map((eachIssue) => {
+          if (eachIssue.id === activeIssue.id) {
+            return {
+              ...eachIssue,
+              status: newStatusId,
+              order_index: newIndex,
+            };
+          }
+          return eachIssue;
+        })
+        .sort((a, b) => a.order_index - b.order_index);
+
+      setIssueList(updatedIssues);
+      moveMutation.mutate({
+        id: activeIssue.id,
+        status: newStatusId,
+        order_index: newIndex,
+      });
+      return;
+    }
+
+    // If dropped on another issue
+    const overIssue = issueList.find((eachIssue) => eachIssue.id == over.id);
+    if (!overIssue) {
+      return;
+    }
+
+    const oldIndex = issueList.findIndex(
+      (eachIssue) => eachIssue.id == active.id
+    );
+    const newIndex = issueList.findIndex(
+      (eachIssue) => eachIssue.id == over.id
+    );
+    if (oldIndex == -1 || newIndex == -1) {
+      return;
+    }
+
+    const reordered = arrayMove(issueList, oldIndex, newIndex);
+    const updatedIssues = reordered.map((eachIssue) => {
+      const myStatusIssues = reordered.filter(
+        (eachItem) => eachItem.status === eachIssue.status
+      );
+      const myIndex = myStatusIssues.findIndex(
+        (eachItem) => eachItem.id === eachIssue.id
+      );
+      return {
+        ...eachIssue,
+        status:
+          eachIssue.id === activeIssue.id ? overIssue.status : eachIssue.status,
+        order_index: myIndex,
+      };
+    });
+    setIssueList(updatedIssues);
+
+    const activeIssueUpdated = updatedIssues.find(
+      (eachIssue) => eachIssue.id === activeIssue.id
+    );
+    if (activeIssueUpdated) {
+      moveMutation.mutate({
+        id: activeIssue.id,
+        status: overIssue.status,
+        order_index: activeIssueUpdated.order_index,
+      });
+    }
   }
 
   return (

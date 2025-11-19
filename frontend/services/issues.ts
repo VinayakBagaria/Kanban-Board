@@ -27,9 +27,10 @@ export function deleteIssue(id: string) {
   });
 }
 
-export function moveIssue(id: string, data: IMoveIssueRequest) {
-  return fetchApi<IIssue>(`/issues/${id}`, {
+export function moveIssue(data: IMoveIssueRequest) {
+  const { id, ...restData } = data;
+  return fetchApi<IIssue>(`/issues/${id}/move-status`, {
     method: "PATCH",
-    body: JSON.stringify(data),
+    body: JSON.stringify(restData),
   });
 }

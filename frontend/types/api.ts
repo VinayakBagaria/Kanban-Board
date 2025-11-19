@@ -48,6 +48,7 @@ export interface ICreateIssueRequest {
 }
 
 export interface IMoveIssueRequest {
+  id: string;
   status: IIssue["status"];
   order_index: IIssue["order_index"];
 }
