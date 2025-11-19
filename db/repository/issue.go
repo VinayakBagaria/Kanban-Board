@@ -10,7 +10,7 @@ import (
 
 type IssueRepository interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
-	GetIssue(issueId string) (*dto.IssueWithRelations, error)
+	GetIssue(issueId string) (*db.Issue, error)
 	CreateIssue(req dto.CreateIssueRequest) (string, error)
 	UpdateIssue(issueId string, req dto.UpdateIssueRequest) error
 	DeleteIssue(issueId string) error
@@ -45,7 +45,7 @@ func (r *issueRepository) GetAll(req dto.GetIssueListRequest) (*dto.IssueListRes
 		return nil, err
 	}
 
-	var issues []*dto.IssueWithRelations
+	var issues []*db.Issue
 	err := base.
 		Preload("Assignee").
 		Preload("Labels").
@@ -68,25 +68,32 @@ func (r *issueRepository) getMaxOrder(status db.IssueStatus) int {
 	return maxIndex
 }
 
-func (r *issueRepository) GetIssue(issueId string) (*dto.IssueWithRelations, error) {
-	var out *dto.IssueWithRelations
-	err := r.db.Model(&dto.IssueWithRelations{}).
+func (r *issueRepository) GetIssue(issueId string) (*db.Issue, error) {
+	var issue *db.Issue
+
+	err := r.db.Model(&db.Issue{}).
 		Preload("Assignee").
 		Preload("Labels").
 		Where("id = ?", issueId).
-		First(&out).Error
-	return out, err
+		First(&issue).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return issue, nil
 }
 
 func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (string, error) {
 	maxOrder := r.getMaxOrder(req.Status)
 
 	issue := db.Issue{
-		ID:         uuid.New(),
-		Status:     req.Status,
-		OrderIndex: maxOrder + 1,
-		Priority:   req.Priority,
-		AssigneeId: req.AssigneeID,
+		ID:          uuid.New(),
+		Title:       *req.Title,
+		Description: *req.Description,
+		Status:      req.Status,
+		OrderIndex:  maxOrder + 1,
+		Priority:    req.Priority,
+		AssigneeId:  req.AssigneeID,
 	}
 
 	for _, id := range req.Labels {
@@ -139,7 +146,19 @@ func (r *issueRepository) UpdateIssue(issueId string, req dto.UpdateIssueRequest
 }
 
 func (r *issueRepository) DeleteIssue(issueId string) error {
-	return r.db.Model(&db.Issue{}).Where("id = ?", issueId).Delete(&db.Issue{}).Error
+	var issue db.Issue
+
+	if err := r.db.Preload("Labels").
+		First(&issue, "id = ?", issueId).Error; err != nil {
+		return err
+	}
+
+	if err := r.db.Model(&issue).Association("Labels").Clear(); err != nil {
+		return err
+	}
+
+	return r.db.Delete(&issue).Error
+
 }
 
 func (r *issueRepository) getCurrentStatus(issueId string) (db.IssueStatus, int, error) {

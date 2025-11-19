@@ -21,8 +21,8 @@ type GetIssueListRequest struct {
 }
 
 type CreateIssueRequest struct {
-	Title       string         `json:"title" binding:"required"`
-	Description string         `json:"description"`
+	Title       *string        `json:"title" binding:"required"`
+	Description *string        `json:"description"`
 	Status      db.IssueStatus `json:"status"`
 	Priority    db.Priority    `json:"priority"`
 	AssigneeID  *uuid.UUID     `json:"assignee_id"`
@@ -38,15 +38,9 @@ type UpdateIssueRequest struct {
 	Labels      []uuid.UUID     `json:"labels"`
 }
 
-type IssueWithRelations struct {
-	Issue    db.Issue
-	Assignee db.User    `json:"assignee,omitempty"`
-	Labels   []db.Label `json:"labels,omitempty"`
-}
-
 type IssueListResponse struct {
-	Data  []*IssueWithRelations `json:"data"`
-	Total int64                 `json:"total"`
+	Data  []*db.Issue `json:"data"`
+	Total int64       `json:"total"`
 }
 
 type MoveIssueRequest struct {
