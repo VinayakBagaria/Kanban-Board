@@ -45,8 +45,8 @@ type IssueWithRelations struct {
 }
 
 type IssueListResponse struct {
-	Data  []*IssueWithRelations
-	Total int64
+	Data  []*IssueWithRelations `json:"data"`
+	Total int64                 `json:"total"`
 }
 
 type MoveIssueRequest struct {

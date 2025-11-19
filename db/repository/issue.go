@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"kanban-board/db"
 	"kanban-board/dto"
 
@@ -46,7 +45,6 @@ func (r *issueRepository) GetAll(req dto.GetIssueListRequest) (*dto.IssueListRes
 		return nil, err
 	}
 
-	var resp *dto.IssueListResponse
 	var issues []*dto.IssueWithRelations
 	err := base.
 		Preload("Assignee").
@@ -58,11 +56,7 @@ func (r *issueRepository) GetAll(req dto.GetIssueListRequest) (*dto.IssueListRes
 		return nil, err
 	}
 
-	fmt.Println(len(issues))
-
-	resp.Data = issues
-	resp.Total = count
-	return resp, nil
+	return &dto.IssueListResponse{Data: issues, Total: count}, nil
 }
 
 func (r *issueRepository) getMaxOrder(status db.IssueStatus) int {

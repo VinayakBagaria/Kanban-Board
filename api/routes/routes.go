@@ -8,7 +8,7 @@ type Route struct {
 	Handler gin.HandlerFunc
 }
 
-func Install(router *gin.Engine, routeList []*Route) {
+func Install(router *gin.RouterGroup, routeList []*Route) {
 	for _, route := range routeList {
 		router.Handle(route.Method, route.Path, route.Handler)
 	}

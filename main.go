@@ -52,10 +52,13 @@ func main() {
 	serverHandler := resthandlers.NewServerHandler()
 	serverRoutes := routes.NewServerRoutes(serverHandler)
 
-	routes.Install(router, userRoutes)
-	routes.Install(router, labelRoutes)
-	routes.Install(router, issueRoutes)
-	routes.Install(router, serverRoutes)
+	api := router.Group("/api")
+	serverApi := router.Group("")
+
+	routes.Install(api, userRoutes)
+	routes.Install(api, labelRoutes)
+	routes.Install(api, issueRoutes)
+	routes.Install(serverApi, serverRoutes)
 
 	apiPort, err := strconv.Atoi(config.GetConfigValue("server.port"))
 	if err != nil {
