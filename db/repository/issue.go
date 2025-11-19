@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"kanban-board/db"
 	"kanban-board/dto"
 
@@ -57,6 +58,8 @@ func (r *issueRepository) GetAll(req dto.GetIssueListRequest) (*dto.IssueListRes
 		return nil, err
 	}
 
+	fmt.Println(len(issues))
+
 	resp.Data = issues
 	resp.Total = count
 	return resp, nil
@@ -111,24 +114,30 @@ func (r *issueRepository) UpdateIssue(issueId string, req dto.UpdateIssueRequest
 		}
 
 		updates := map[string]interface{}{
-			"title":       req.Title,
-			"status":      req.Status,
-			"priority":    req.Priority,
-			"assignee_id": req.AssigneeID,
+			"title":  req.Title,
+			"status": req.Status,
+		}
+		if len(req.AssigneeID) > 0 {
+			updates["assignee_id"] = req.AssigneeID
+		}
+		if req.Priority != nil && len(*req.Priority) > 0 {
+			updates["priority"] = req.Priority
 		}
 		if err := tx.Model(&issue).Updates(updates).Error; err != nil {
 			return err
 		}
 
-		// Replace labels
-		var newLabels []db.Label
-		for _, id := range req.Labels {
-			newLabels = append(newLabels, db.Label{ID: id})
-		}
+		if req.Labels != nil {
+			// Replace labels
+			var newLabels []db.Label
+			for _, id := range req.Labels {
+				newLabels = append(newLabels, db.Label{ID: id})
+			}
 
-		// Clear old and set new
-		if err := tx.Model(&issue).Association("Labels").Replace(newLabels); err != nil {
-			return err
+			// Clear old and set new
+			if err := tx.Model(&issue).Association("Labels").Replace(newLabels); err != nil {
+				return err
+			}
 		}
 
 		return nil
