@@ -11,7 +11,8 @@ import (
 type IssueRepository interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
 	GetIssue(issueId string) (*dto.IssueWithRelations, error)
-	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
+	CreateIssue(req dto.CreateIssueRequest) (string, error)
+	UpdateIssue(issueId string, req dto.UpdateIssueRequest) error
 	DeleteIssue(issueId string) error
 	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
@@ -80,7 +81,7 @@ func (r *issueRepository) GetIssue(issueId string) (*dto.IssueWithRelations, err
 	return out, err
 }
 
-func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error) {
+func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (string, error) {
 	maxOrder := r.getMaxOrder(req.Status)
 
 	issue := db.Issue{
@@ -96,10 +97,42 @@ func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWit
 	}
 
 	if err := r.db.Create(&issue).Error; err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return r.GetIssue(issue.ID.String())
+	return issue.ID.String(), nil
+}
+
+func (r *issueRepository) UpdateIssue(issueId string, req dto.UpdateIssueRequest) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		var issue db.Issue
+		if err := tx.Where("id = ?", issueId).First(&issue).Error; err != nil {
+			return err
+		}
+
+		updates := map[string]interface{}{
+			"title":       req.Title,
+			"status":      req.Status,
+			"priority":    req.Priority,
+			"assignee_id": req.AssigneeID,
+		}
+		if err := tx.Model(&issue).Updates(updates).Error; err != nil {
+			return err
+		}
+
+		// Replace labels
+		var newLabels []db.Label
+		for _, id := range req.Labels {
+			newLabels = append(newLabels, db.Label{ID: id})
+		}
+
+		// Clear old and set new
+		if err := tx.Model(&issue).Association("Labels").Replace(newLabels); err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func (r *issueRepository) DeleteIssue(issueId string) error {

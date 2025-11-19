@@ -15,6 +15,7 @@ type IssueHandler interface {
 	GetIssues(*gin.Context)
 	GetIssue(*gin.Context)
 	CreateIssue(*gin.Context)
+	UpdateIssue(*gin.Context)
 	DeleteIssue(*gin.Context)
 	MoveIssueStatus(*gin.Context)
 }
@@ -102,6 +103,37 @@ func (h *issueHandler) CreateIssue(c *gin.Context) {
 	}
 
 	restutil.WriteAsJson(c, http.StatusOK, newIssue)
+}
+
+func (h *issueHandler) UpdateIssue(c *gin.Context) {
+	var req dto.UpdateIssueRequest
+
+	// Read the raw body
+	bodyBytes, err := c.GetRawData()
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	// Parse JSON to map for cleaning
+	var rawData map[string]interface{}
+	if err := json.Unmarshal(bodyBytes, &rawData); err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedIssue, err := h.svc.UpdateIssue(c.Param("id"), req)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, updatedIssue)
 }
 
 func (h *issueHandler) DeleteIssue(c *gin.Context) {

@@ -29,6 +29,15 @@ type CreateIssueRequest struct {
 	Labels      []uuid.UUID    `json:"labels"`
 }
 
+type UpdateIssueRequest struct {
+	Title       *string         `json:"title" binding:"required"`
+	Description *string         `json:"description"`
+	Status      *db.IssueStatus `json:"status"`
+	Priority    *db.Priority    `json:"priority"`
+	AssigneeID  *uuid.UUID      `json:"assignee_id"`
+	Labels      []uuid.UUID     `json:"labels"`
+}
+
 type IssueWithRelations struct {
 	Issue    db.Issue
 	Assignee db.User    `json:"assignee,omitempty"`

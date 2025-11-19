@@ -10,6 +10,7 @@ type IssueService interface {
 	GetAll(req dto.GetIssueListRequest) (*dto.IssueListResponse, error)
 	GetIssue(issueId string) (*dto.IssueWithRelations, error)
 	CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRelations, error)
+	UpdateIssue(issueId string, req dto.UpdateIssueRequest) (*dto.IssueWithRelations, error)
 	DeleteIssue(issueId string) error
 	MoveIssueStatus(issueId string, req dto.MoveIssueRequest) error
 }
@@ -37,7 +38,20 @@ func (s *issueService) CreateIssue(req dto.CreateIssueRequest) (*dto.IssueWithRe
 	if req.Priority == "" {
 		req.Priority = db.PriorityMedium
 	}
-	return s.repository.CreateIssue(req)
+	issueId, err := s.repository.CreateIssue(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.repository.GetIssue(issueId)
+}
+
+func (s *issueService) UpdateIssue(issueId string, req dto.UpdateIssueRequest) (*dto.IssueWithRelations, error) {
+	if err := s.repository.UpdateIssue(issueId, req); err != nil {
+		return nil, err
+	}
+
+	return s.repository.GetIssue(issueId)
 }
 
 func (s *issueService) DeleteIssue(issueId string) error {
