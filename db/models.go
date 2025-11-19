@@ -51,3 +51,8 @@ type Label struct {
 	Name  string    `json:"name"`
 	Color string    `json:"color"`
 }
+
+type IssueLabel struct {
+	IssueID uuid.UUID `gorm:"type:uuid"`
+	LabelID uuid.UUID `gorm:"type:uuid"`
+}

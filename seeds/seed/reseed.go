@@ -9,7 +9,7 @@ import (
 
 func Reseed(gormDb *gorm.DB) error {
 	fmt.Println("Dropping tables")
-	tables := []interface{}{&db.Issue{}, &db.User{}, &db.Label{}}
+	tables := []interface{}{&db.Issue{}, &db.User{}, &db.Label{}, &db.IssueLabel{}}
 	if err := gormDb.Migrator().DropTable(tables...); err != nil {
 		return err
 	}
