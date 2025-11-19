@@ -2,6 +2,7 @@ import { IIssue } from "@/types/api";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Card } from "../ui/card";
+import { useRouter } from "next/navigation";
 
 interface IEachIssueProps {
   issue: IIssue;
@@ -16,6 +17,7 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
     transition,
     isDragging,
   } = useSortable({ id: issue.id });
+  const router = useRouter();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -26,13 +28,14 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
     <Card
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
+      onClick={() => router.push(`/issues/${issue.id}`)}
       className={`cursor-grab gap-4 rounded-md p-3 shadow-sm ${
         isDragging ? "opacity-30" : ""
       }`}
     >
+      {/* <div {...attributes} {...listeners}> */}
       <p className="m-0 font-medium text-sm">{issue.title}</p>
+      {/* </div> */}
     </Card>
   );
 };

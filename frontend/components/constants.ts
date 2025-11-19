@@ -1,4 +1,4 @@
-import { IssueStatusType } from "@/types/api";
+import { IssueStatusType, PriorityType } from "@/types/api";
 
 export const ISSUE_STATUS: Array<{ id: IssueStatusType; name: string }> = [
   {
@@ -20,5 +20,24 @@ export const ISSUE_STATUS: Array<{ id: IssueStatusType; name: string }> = [
   {
     id: "done",
     name: "Done",
+  },
+];
+
+export const ISSUE_PRIORITY: Array<{ id: PriorityType; name: string }> = [
+  {
+    id: "low",
+    name: "Low",
+  },
+  {
+    id: "medium",
+    name: "Medium",
+  },
+  {
+    id: "high",
+    name: "High",
+  },
+  {
+    id: "critical",
+    name: "Critical",
   },
 ];

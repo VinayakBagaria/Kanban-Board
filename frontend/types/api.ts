@@ -3,7 +3,7 @@ export type IssueStatusType =
   | "todo"
   | "in_progress"
   | "done"
-  | "canceled";
+  | "cancelled";
 
 export type PriorityType = "low" | "medium" | "high" | "critical";
 
@@ -46,6 +46,10 @@ export interface ICreateIssueRequest {
   assignee_id: IIssue["assignee_id"];
   labels: Array<ILabel["id"]>;
 }
+
+export type UpdateIssueRequestType = {
+  id: string;
+} & Partial<ICreateIssueRequest>;
 
 export interface IMoveIssueRequest {
   id: string;

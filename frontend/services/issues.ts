@@ -3,6 +3,7 @@ import {
   IIssue,
   IMoveIssueRequest,
   IPaginatedDataResponse,
+  UpdateIssueRequestType,
 } from "@/types/api";
 import { fetchApi } from "./api";
 
@@ -17,6 +18,13 @@ export function getIssue(id: string) {
 export function createIssue(data: ICreateIssueRequest) {
   return fetchApi<IIssue>("/issues", {
     method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function updateIssue(data: UpdateIssueRequestType) {
+  return fetchApi<IIssue>(`/issues/${data.id}`, {
+    method: "PUT",
     body: JSON.stringify(data),
   });
 }

@@ -7,7 +7,7 @@ import {
 } from "@dnd-kit/core";
 import { ReactNode, useEffect, useState } from "react";
 import KanbanColumn from "./KanbanColumn";
-import { ISSUE_STATUS } from "./constants";
+import { ISSUE_STATUS } from "../constants";
 import { KanbanContext } from "./context";
 import { IIssue, IMoveIssueRequest, IssueStatusType } from "@/types/api";
 import { arrayMove } from "@dnd-kit/sortable";
