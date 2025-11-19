@@ -41,18 +41,11 @@ type Issue struct {
 type User struct {
 	ID     uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	Name   string    `json:"name"`
-	Avatar *string   `json:"string"`
+	Avatar string    `json:"string"`
 }
 
 type Label struct {
 	ID    uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	Name  string    `json:"name"`
 	Color string    `json:"color"`
-}
-
-type IssueLabel struct {
-	IssueId uuid.UUID
-	LabelId uuid.UUID
-	Issue   Issue `gorm:"foreignKey:IssueId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Label   Label `gorm:"foreignKey:LabelId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
