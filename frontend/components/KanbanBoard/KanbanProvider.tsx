@@ -2,6 +2,7 @@ import {
   DndContext,
   DragEndEvent,
   DragOverEvent,
+  DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
 import { ReactNode, useEffect, useState } from "react";
@@ -12,13 +13,14 @@ import { IIssue, IMoveIssueRequest, IssueStatusType } from "@/types/api";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useMutation } from "@tanstack/react-query";
 import { moveIssue } from "@/services/issues";
+import EachIssue from "./EachIssue";
 
 interface IKanbanProviderProps {
   issues: Array<IIssue>;
 }
 
 const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
-  const [activeCard, setActiveCard] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [issueList, setIssueList] = useState(issues);
   const moveMutation = useMutation({
     mutationFn: moveIssue,
@@ -37,14 +39,16 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
     }),
     {} as Record<IssueStatusType, Array<IIssue>>
   );
+  const activeIssue = issueList.find((eachIssue) => eachIssue.id == activeId);
 
   function handleDragStart(event: DragStartEvent) {
-    setActiveCard(event.active.id as string);
+    setActiveId(event.active.id as string);
   }
 
   function handleDragOver(event: DragOverEvent) {}
 
   function handleDragEnd(event: DragEndEvent) {
+    setActiveId(null);
     const { active, over } = event;
     console.log({ active, over });
     if (!over) {
@@ -135,7 +139,7 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
     <KanbanContext.Provider
       value={{
         issueByStatus,
-        activeCard,
+        activeCard: activeId,
       }}
     >
       <DndContext
@@ -152,6 +156,9 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
             />
           ))}
         </div>
+        <DragOverlay>
+          {activeIssue && <EachIssue issue={activeIssue} />}
+        </DragOverlay>
       </DndContext>
     </KanbanContext.Provider>
   );
