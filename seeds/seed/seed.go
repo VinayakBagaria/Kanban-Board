@@ -11,5 +11,9 @@ func Seed(gormDb *gorm.DB) error {
 		return err
 	}
 
+	if err := SeedIssues(gormDb); err != nil {
+		return err
+	}
+
 	return nil
 }

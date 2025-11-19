@@ -26,7 +26,7 @@ const (
 type Issue struct {
 	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
 	CreatedOn int64     `json:"created_on" gorm:"autoCreateTime:milli"`
-	UpdatedOn int64     `json:"update_on" gorm:"autoUpdateTime:milli"`
+	UpdatedOn int64     `json:"updated_on" gorm:"autoUpdateTime:milli"`
 
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
