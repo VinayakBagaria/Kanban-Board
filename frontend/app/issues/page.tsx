@@ -1,6 +1,7 @@
 "use client";
 
 import CreateIssue from "@/components/CreateIssue";
+import IssueFilters from "@/components/IssueFilters";
 import KanbanProvider from "@/components/KanbanBoard/KanbanProvider";
 import { getIssues } from "@/services/issues";
 import { useQuery } from "@tanstack/react-query";
@@ -24,6 +25,7 @@ const IssuesList = () => {
 
   return (
     <div className="min-h-screen">
+      <IssueFilters />
       <CreateIssue />
       <KanbanProvider issues={issues} />
     </div>

@@ -13,7 +13,11 @@ import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "@/services/users";
 import { getLabels } from "@/services/labels";
-import { ICreateIssueRequest, PriorityType } from "@/types/api";
+import {
+  ICreateIssueRequest,
+  IssueStatusType,
+  PriorityType,
+} from "@/types/api";
 
 interface IIssueFormProps {
   formData: Partial<ICreateIssueRequest>;
@@ -52,7 +56,9 @@ const IssueForm = ({ formData, updateFormData }: IIssueFormProps) => {
         <Label>Status</Label>
         <Select
           value={formData.status || ""}
-          onValueChange={(newValue) => updateFormData({ status: newValue })}
+          onValueChange={(newValue) =>
+            updateFormData({ status: newValue as IssueStatusType })
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Status" />
