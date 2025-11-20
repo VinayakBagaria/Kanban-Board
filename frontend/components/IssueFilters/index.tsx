@@ -30,6 +30,8 @@ const IssueFilters = () => {
   const selectedLabels =
     searchParams.get("labels")?.split(",").filter(Boolean) ?? [];
 
+  const hasActiveFilters = assignee || priority || selectedLabels.length > 0;
+
   function updateFilter(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
@@ -114,14 +116,12 @@ const IssueFilters = () => {
           </button>
         ))}
 
-        {assignee ||
-          priority ||
-          (selectedLabels.length > 0 && (
-            <Button variant="ghost" onClick={() => router.push("/issues")}>
-              <X />
-              Clear filters
-            </Button>
-          ))}
+        {hasActiveFilters && (
+          <Button variant="ghost" onClick={() => router.push("/issues")}>
+            <X />
+            Clear filters
+          </Button>
+        )}
       </div>
     </div>
   );

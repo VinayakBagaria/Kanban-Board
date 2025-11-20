@@ -1,14 +1,36 @@
 import {
   ICreateIssueRequest,
   IIssue,
+  IIssueListRequest,
   IMoveIssueRequest,
   IPaginatedDataResponse,
   UpdateIssueRequestType,
 } from "@/types/api";
 import { fetchApi } from "./api";
 
-export function getIssues() {
-  return fetchApi<IPaginatedDataResponse<IIssue>>("/issues");
+export function getIssues(params?: IIssueListRequest) {
+  const searchParams = new URLSearchParams();
+  if (params?.assignee) {
+    searchParams.set("assignee", params.assignee);
+  }
+  if (params?.labels && params?.labels.length > 0) {
+    params.labels.forEach((eachLabel) =>
+      searchParams.set("labels[]", eachLabel)
+    );
+  }
+  if (params?.priority && params?.priority.length > 0) {
+    params.priority.forEach((eachPriority) =>
+      searchParams.set("priority[]", eachPriority)
+    );
+  }
+  if (params?.status && params?.status.length > 0) {
+    params.status.forEach((eachStatus) =>
+      searchParams.set("status[]", eachStatus)
+    );
+  }
+
+  const queryString = searchParams.toString();
+  return fetchApi<IPaginatedDataResponse<IIssue>>(`/issues?${queryString}`);
 }
 
 export function getIssue(id: string) {

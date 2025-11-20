@@ -38,6 +38,15 @@ export interface IPaginatedDataResponse<T> {
   total: number;
 }
 
+export interface IIssueListRequest {
+  status?: Array<IssueStatusType>;
+  assignee?: string;
+  labels?: string[];
+  priority?: Array<PriorityType>;
+  page?: number;
+  page_size?: number;
+}
+
 export interface ICreateIssueRequest {
   title: IIssue["title"];
   description: IIssue["description"];
