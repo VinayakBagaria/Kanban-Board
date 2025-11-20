@@ -53,6 +53,6 @@ type Label struct {
 }
 
 type IssueLabel struct {
-	IssueID uuid.UUID `gorm:"type:uuid"`
-	LabelID uuid.UUID `gorm:"type:uuid"`
+	IssueID uuid.UUID `gorm:"type:uuid;uniqueIndex:idx_issue_label"`
+	LabelID uuid.UUID `gorm:"type:uuid;uniqueIndex:idx_issue_label"`
 }
