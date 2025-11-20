@@ -16,8 +16,8 @@ export interface IIssue {
   status: IssueStatusType;
   order_index: number;
   priority: PriorityType;
-  assignee_id: string;
-  assignee: IAssignee;
+  assignee_id: string | null;
+  assignee: IAssignee | null;
   labels: Array<ILabel>;
 }
 
