@@ -44,14 +44,10 @@ const KanbanProvider = ({ issues, isLoading }: IKanbanProviderProps) => {
   const activeIssue = issueList.find((eachIssue) => eachIssue.id == activeId);
 
   function handleDragStart(event: DragStartEvent) {
-    event.activatorEvent.preventDefault();
-    event.activatorEvent.stopPropagation();
     setActiveId(event.active.id as string);
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    event.activatorEvent.preventDefault();
-    event.activatorEvent.stopPropagation();
     setActiveId(null);
     const { active, over } = event;
     if (!over) {
@@ -127,10 +123,14 @@ const KanbanProvider = ({ issues, isLoading }: IKanbanProviderProps) => {
     const activeIssueUpdated = updatedIssues.find(
       (eachIssue) => eachIssue.id === activeIssue.id
     );
-    if (activeIssueUpdated) {
+    if (
+      activeIssueUpdated &&
+      (activeIssue.status !== activeIssueUpdated.status ||
+        activeIssue.order_index !== activeIssueUpdated.order_index)
+    ) {
       moveMutation.mutate({
         id: activeIssue.id,
-        status: overIssue.status,
+        status: activeIssueUpdated.status,
         order_index: activeIssueUpdated.order_index,
       });
     }
