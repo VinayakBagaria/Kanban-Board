@@ -7,6 +7,7 @@ import {
 import EachIssue from "./EachIssue";
 import { useKanbanContext } from "./context";
 import { useDroppable } from "@dnd-kit/core";
+import { Badge } from "../ui/badge";
 
 interface IKanbanColumnProps {
   id: IssueStatusType;
@@ -21,13 +22,19 @@ const KanbanColumn = ({ id, title }: IKanbanColumnProps) => {
   const issueIds = issues.map((eachIssue) => eachIssue.id);
 
   return (
-    <Card ref={setNodeRef}>
-      <CardHeader>
-        <CardTitle>
-          {title} - {issues.length}
+    <div className="p-3 flex-1 bg-gray-100 rounded-lg" ref={setNodeRef}>
+      <CardHeader className="px-0 flex">
+        <CardTitle className="text-sm font-medium text-gray-900">
+          {title}
         </CardTitle>
+        <Badge
+          variant="default"
+          className="bg-white text-gray-900 border-gray-900"
+        >
+          {issueIds.length}
+        </Badge>
       </CardHeader>
-      <CardContent className="flex-1 overflow-y-auto space-y-2">
+      <CardContent className="mt-4 flex-1 overflow-y-auto space-y-2 px-0">
         {issues.length === 0 ? (
           <h1>No issues</h1>
         ) : (
@@ -41,7 +48,7 @@ const KanbanColumn = ({ id, title }: IKanbanColumnProps) => {
           </SortableContext>
         )}
       </CardContent>
-    </Card>
+    </div>
   );
 };
 

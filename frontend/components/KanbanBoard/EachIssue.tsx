@@ -1,11 +1,11 @@
 import { IIssue } from "@/types/api";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
+import { HolderOutlined } from "@ant-design/icons";
 
 interface IEachIssueProps {
   issue: IIssue;
@@ -35,10 +35,17 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
       }`}
     >
       <div className="flex justify-between gap-2">
-        <p className="m-0 font-medium text-sm">{issue.title}</p>
-        <div {...attributes} {...listeners}>
-          <GripVertical />
-        </div>
+        <p className="text-sm w-48 font-medium leading-snug text-gray-900">
+          {issue.title}
+        </p>
+        {issue.assignee && (
+          <Avatar>
+            <AvatarImage
+              src={issue.assignee.avatar}
+              alt={issue.assignee.name}
+            />
+          </Avatar>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -58,17 +65,9 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
 
       <Badge>{issue.priority}</Badge>
 
-      {issue.assignee && (
-        <>
-          <Avatar>
-            <AvatarImage
-              src={issue.assignee.avatar}
-              alt={issue.assignee.name}
-            />{" "}
-          </Avatar>
-          {issue.assignee.name}
-        </>
-      )}
+      <div {...attributes} {...listeners} className="ml-auto">
+        <HolderOutlined />
+      </div>
     </Card>
   );
 };

@@ -14,6 +14,7 @@ import { ISSUE_STATUS } from "../constants";
 import EachIssue from "./EachIssue";
 import KanbanColumn from "./KanbanColumn";
 import { KanbanContext } from "./context";
+import { Card } from "../ui/card";
 
 interface IKanbanProviderProps {
   issues: Array<IIssue>;
@@ -45,8 +46,6 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
     setActiveId(event.active.id as string);
   }
 
-  function handleDragOver(event: DragOverEvent) {}
-
   function handleDragEnd(event: DragEndEvent) {
     setActiveId(null);
     const { active, over } = event;
@@ -61,8 +60,6 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
     if (!activeIssue) {
       return;
     }
-
-    console.log({ activeIssue, over });
 
     // If dropped on a column
     if (ISSUE_STATUS.find((eachStatus) => eachStatus.id == over.id)) {
@@ -142,12 +139,8 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
         activeCard: activeId,
       }}
     >
-      <DndContext
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="grid grid-cols-5 gap-4 h-full">
+      <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <div className="flex flex-row gap-2 p-3">
           {ISSUE_STATUS.map((eachStatus) => (
             <KanbanColumn
               key={eachStatus.id}

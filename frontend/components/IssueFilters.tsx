@@ -3,7 +3,6 @@
 import { getLabels } from "@/services/labels";
 import { getUsers } from "@/services/users";
 import { useQuery } from "@tanstack/react-query";
-import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ISSUE_PRIORITY } from "./constants";
 import { Button } from "./ui/button";
@@ -14,6 +13,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { CameraFilled, ProjectFilled } from "@ant-design/icons";
+import { ChevronDownIcon, X } from "lucide-react";
+import { Badge } from "./ui/badge";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "./ui/menubar";
+import { Label } from "./ui/label";
+import { Checkbox } from "./ui/checkbox";
 
 const IssueFilters = () => {
   const searchParams = useSearchParams();
@@ -59,7 +72,7 @@ const IssueFilters = () => {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="py-4 px-8 flex gap-2">
       <Select
         value={assignee || "all"}
         onValueChange={(value) =>
@@ -98,34 +111,43 @@ const IssueFilters = () => {
         </SelectContent>
       </Select>
 
-      <div className="flex items-center gap-2 flex-wrap">
-        {labels.map((label) => (
-          <button
-            key={label.id}
-            type="button"
-            onClick={() => toggleLabel(label.id)}
-            className={`px-3 py-1 rounded-md text-xs border transition-colors ${
-              selectedLabels.includes(label.id)
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-background border-border hover:bg-accent"
-            }`}
-            style={{
-              borderColor: selectedLabels.includes(label.id)
-                ? undefined
-                : label.color,
-            }}
-          >
-            {label.name}
-          </button>
-        ))}
+      <Menubar>
+        <MenubarMenu>
+          <MenubarTrigger className="w-[160] flex justify-between items-center">
+            <div className="flex gap-1 items-center">
+              Labels{" "}
+              {selectedLabels.length > 0 && <p>({selectedLabels.length})</p>}
+            </div>
+            <ChevronDownIcon className="size-4 opacity-50" />
+          </MenubarTrigger>
+          <MenubarContent>
+            {labels.map((eachLabel) => (
+              <MenubarItem
+                key={eachLabel.id}
+                className="cursor-pointer"
+                onClick={(event) => {
+                  event.preventDefault();
+                  toggleLabel(eachLabel.id);
+                }}
+              >
+                <Checkbox
+                  id={eachLabel.id}
+                  checked={selectedLabels.includes(eachLabel.id)}
+                  className="cursor-pointer"
+                />
+                <Label htmlFor={eachLabel.id}>{eachLabel.name}</Label>
+              </MenubarItem>
+            ))}
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
 
-        {hasActiveFilters && (
-          <Button variant="ghost" onClick={() => router.push("/issues")}>
-            <X />
-            Clear filters
-          </Button>
-        )}
-      </div>
+      {hasActiveFilters && (
+        <Button variant="ghost" onClick={() => router.push("/issues")}>
+          <X />
+          Clear filters
+        </Button>
+      )}
     </div>
   );
 };

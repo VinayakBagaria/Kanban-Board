@@ -1,6 +1,6 @@
 "use client";
 
-import CreateIssue from "@/components/CreateIssue";
+import ListHeader from "@/components/ListHeader";
 import IssueFilters from "@/components/IssueFilters";
 import KanbanProvider from "@/components/KanbanBoard/KanbanProvider";
 import { getIssues } from "@/services/issues";
@@ -45,10 +45,12 @@ const IssuesList = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col flex-1 min-w-0 bg-white overflow-hidden">
+      <ListHeader />
       <IssueFilters />
-      <CreateIssue />
-      <KanbanProvider issues={issues} />
+      <div className="overflow-auto flex-1">
+        <KanbanProvider issues={issues} />
+      </div>
     </div>
   );
 };
