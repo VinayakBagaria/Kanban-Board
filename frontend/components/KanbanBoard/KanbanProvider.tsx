@@ -18,9 +18,10 @@ import { Card } from "../ui/card";
 
 interface IKanbanProviderProps {
   issues: Array<IIssue>;
+  isLoading: boolean;
 }
 
-const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
+const KanbanProvider = ({ issues, isLoading }: IKanbanProviderProps) => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [issueList, setIssueList] = useState(issues);
   const moveMutation = useMutation({
@@ -136,11 +137,11 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
     <KanbanContext.Provider
       value={{
         issueByStatus,
-        activeCard: activeId,
+        isLoading,
       }}
     >
       <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex flex-row gap-2 p-3">
+        <div className="flex gap-2 py-2 px-6">
           {ISSUE_STATUS.map((eachStatus) => (
             <KanbanColumn
               key={eachStatus.id}

@@ -1,14 +1,13 @@
 "use client";
 
-import ListHeader from "@/components/ListHeader";
 import IssueFilters from "@/components/IssueFilters";
 import KanbanProvider from "@/components/KanbanBoard/KanbanProvider";
+import ListHeader from "@/components/ListHeader";
 import { getIssues } from "@/services/issues";
-import { IssueStatusType, IssuePriorityType } from "@/types/api";
+import { IssuePriorityType, IssueStatusType } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
 const IssuesList = () => {
   const searchParams = useSearchParams();
@@ -41,20 +40,12 @@ const IssuesList = () => {
     return <h1>Error</h1>;
   }
 
-  if (isLoading) {
-    return (
-      <div className="w-screen h-screen flex justify-center items-center">
-        <Skeleton className="h-[90%] w-[90%]" />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col flex-1 min-w-0 bg-white overflow-hidden">
       <ListHeader />
       <IssueFilters />
       <div className="overflow-auto flex-1">
-        <KanbanProvider issues={issues} />
+        <KanbanProvider issues={issues} isLoading={isLoading} />
       </div>
     </div>
   );

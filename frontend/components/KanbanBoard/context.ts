@@ -3,12 +3,12 @@ import { createContext, useContext } from "react";
 
 type KanbanContextProps = {
   issueByStatus: Record<IssueStatusType, Array<IIssue>> | null;
-  activeCard: string | null;
+  isLoading: boolean;
 };
 
 export const KanbanContext = createContext<KanbanContextProps>({
   issueByStatus: null,
-  activeCard: null,
+  isLoading: true,
 });
 
 export function useKanbanContext() {

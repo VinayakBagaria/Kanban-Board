@@ -14,6 +14,7 @@ import { Card } from "../ui/card";
 import { getInitials, getUserColor } from "@/utils/user";
 import UserDetails from "../UserDetails";
 import PriorityIcon from "../PriorityIcon";
+import { ISSUE_PRIORITY } from "../constants";
 
 interface IEachIssueProps {
   issue: IIssue;
@@ -64,9 +65,18 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
       )}
 
       <div className="flex justify-between items-center">
-        <PriorityIcon id={issue.priority} />
+        <div className="flex items-center gap-1">
+          <p className="text-xs text-gray-600">
+            {
+              ISSUE_PRIORITY.find(
+                (eachPriority) => eachPriority.id === issue.priority
+              )?.name
+            }
+          </p>
+          <PriorityIcon id={issue.priority} />
+        </div>
         <div className="flex justify-between gap-2">
-          <div {...attributes} {...listeners} className="ml-auto">
+          <div {...attributes} {...listeners}>
             <HolderOutlined />
           </div>
           {issue.assignee && <UserDetails assignee={issue.assignee} />}
