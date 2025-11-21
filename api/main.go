@@ -16,10 +16,8 @@ import (
 )
 
 func main() {
-	err := config.Init("config", "./")
-	if err != nil {
-		log.Fatalln("Unable to read config file: %w", err)
-	}
+	appConfig := config.Init()
+	fmt.Println(appConfig)
 
 	router := gin.Default()
 	// Logger middleware will write the logs to gin.DefaultWriter = os.Stdout
@@ -41,8 +39,7 @@ func main() {
 	})
 
 	// Initialize db
-	dbConfig := db.NewConfiguration()
-	dbHandler, err := db.NewConnection(dbConfig)
+	dbHandler, err := db.NewConnection(appConfig)
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -73,7 +70,7 @@ func main() {
 	routes.Install(api, issueRoutes)
 	routes.Install(serverApi, serverRoutes)
 
-	apiPort, err := strconv.Atoi(config.GetConfigValue("server.port"))
+	apiPort, err := strconv.Atoi(appConfig.AppPort)
 	if err != nil {
 		log.Fatalln("Unable to parse api port")
 	}

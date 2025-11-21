@@ -1,6 +1,7 @@
 package db
 
 import (
+	"kanban-board/config"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -8,9 +9,9 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-func NewConnection(cfg Configuration) (*gorm.DB, error) {
+func NewConnection(appConfig *config.Configuration) (*gorm.DB, error) {
 	dialector := postgres.New(postgres.Config{
-		DSN:                  cfg.Dsn(),
+		DSN:                  appConfig.DbUrl,
 		PreferSimpleProtocol: true,
 	})
 	db, err := gorm.Open(dialector, &gorm.Config{})

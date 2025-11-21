@@ -9,16 +9,12 @@ import (
 )
 
 func main() {
-	err := config.Init("config", "./")
-	if err != nil {
-		log.Fatalln(err)
-	}
+	appConfig := config.Init()
 
 	reseedCmd := flag.Bool("reseed", false, "Drop tables and re-seeds the db")
 	flag.Parse()
 
-	dbConfig := db.NewConfiguration()
-	dbHandler, err := db.NewConnection(dbConfig)
+	dbHandler, err := db.NewConnection(appConfig)
 	if err != nil {
 		log.Fatalln(err)
 	}
