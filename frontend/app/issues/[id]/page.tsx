@@ -1,6 +1,7 @@
 "use client";
 
 import IssueDetails from "@/components/IssueDetails";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getIssue } from "@/services/issues";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -15,7 +16,11 @@ const IssueDetailsPage = () => {
   });
 
   if (isLoading) {
-    return "Loading...";
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <Skeleton className="w-[90%] h-[90%]" />
+      </div>
+    );
   }
 
   if (!issue) {
