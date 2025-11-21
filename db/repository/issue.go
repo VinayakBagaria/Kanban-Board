@@ -88,8 +88,8 @@ func (r *issueRepository) CreateIssue(req dto.CreateIssueRequest) (string, error
 
 	issue := db.Issue{
 		ID:          uuid.New(),
-		Title:       *req.Title,
-		Description: *req.Description,
+		Title:       req.Title,
+		Description: req.Description,
 		Status:      req.Status,
 		OrderIndex:  maxOrder + 1,
 		Priority:    req.Priority,
@@ -121,7 +121,7 @@ func (r *issueRepository) UpdateIssue(issueId string, req dto.UpdateIssueRequest
 		if len(req.AssigneeID) > 0 {
 			updates["assignee_id"] = req.AssigneeID
 		}
-		if req.Priority != nil && len(*req.Priority) > 0 {
+		if len(req.Priority) > 0 {
 			updates["priority"] = req.Priority
 		}
 		if err := tx.Model(&issue).Updates(updates).Error; err != nil {

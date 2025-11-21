@@ -3,7 +3,6 @@ import { IIssue, IssueStatusType } from "@/types/api";
 import {
   DndContext,
   DragEndEvent,
-  DragOverEvent,
   DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
@@ -14,7 +13,6 @@ import { ISSUE_STATUS } from "../constants";
 import EachIssue from "./EachIssue";
 import KanbanColumn from "./KanbanColumn";
 import { KanbanContext } from "./context";
-import { Card } from "../ui/card";
 
 interface IKanbanProviderProps {
   issues: Array<IIssue>;
