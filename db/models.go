@@ -41,9 +41,8 @@ type Issue struct {
 }
 
 type User struct {
-	ID     uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
-	Name   string    `json:"name"`
-	Avatar string    `json:"avatar"`
+	ID   uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
+	Name string    `json:"name"`
 }
 
 type Label struct {

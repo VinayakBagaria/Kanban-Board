@@ -24,7 +24,6 @@ export interface IIssue {
 export interface IAssignee {
   id: string;
   name: string;
-  avatar: string;
 }
 
 export interface ILabel {

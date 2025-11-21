@@ -1,6 +1,7 @@
 package seed
 
 import (
+	"fmt"
 	"kanban-board/db"
 	"math/rand"
 
@@ -9,9 +10,28 @@ import (
 	"gorm.io/gorm"
 )
 
+var verbs = []string{
+	"Fix", "Improve", "Update", "Refactor", "Remove", "Add",
+	"Optimize", "Implement", "Upgrade", "Investigate",
+}
+
+var objects = []string{
+	"authentication flow",
+	"user profile page",
+	"dashboard widgets",
+	"payment gateway",
+	"API rate limits",
+	"email notifications",
+	"mobile responsiveness",
+	"search filtering",
+	"database indexing",
+	"file upload errors",
+}
+
+var priorities = []db.Priority{db.PriorityLow, db.PriorityMedium, db.PriorityHigh, db.PriorityCritical}
+var statuses = []db.IssueStatus{db.StatusBacklog, db.StatusTodo, db.StatusInProgress, db.StatusDone, db.StatusCancelled}
+
 func SeedIssues(gormDb *gorm.DB) error {
-	priorities := []db.Priority{db.PriorityLow, db.PriorityMedium, db.PriorityHigh, db.PriorityCritical}
-	statuses := []db.IssueStatus{db.StatusBacklog, db.StatusTodo, db.StatusInProgress, db.StatusDone, db.StatusCancelled}
 
 	var users []*db.User
 	gormDb.Find(&users)
@@ -29,8 +49,8 @@ func SeedIssues(gormDb *gorm.DB) error {
 
 		issue := db.Issue{
 			ID:          uuid.New(),
-			Title:       "Issue " + uuid.NewString()[0:4],
-			Description: faker.Paragraph(),
+			Title:       fmt.Sprintf("%s %s", verbs[rand.Intn(len(verbs))], objects[rand.Intn(len(objects))]),
+			Description: fmt.Sprintf("%s\nExpected: %s\nActual: %s", faker.Sentence(), faker.Sentence(), faker.Sentence()),
 			Status:      statuses[rand.Intn(len(statuses))],
 			OrderIndex:  i,
 			Priority:    priorities[rand.Intn(len(priorities))],

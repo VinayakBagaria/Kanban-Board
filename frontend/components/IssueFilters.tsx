@@ -72,7 +72,7 @@ const IssueFilters = () => {
   }
 
   return (
-    <div className="py-4 px-8 flex gap-2">
+    <div className="py-4 px-6 flex gap-2">
       <Select
         value={assignee || "all"}
         onValueChange={(value) =>

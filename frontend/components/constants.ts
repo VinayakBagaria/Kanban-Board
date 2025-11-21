@@ -1,4 +1,5 @@
 import { IssueStatusType, IssuePriorityType } from "@/types/api";
+import { LineOutlined } from "@ant-design/icons";
 
 export const ISSUE_STATUS: Array<{ id: IssueStatusType; name: string }> = [
   {
@@ -23,7 +24,10 @@ export const ISSUE_STATUS: Array<{ id: IssueStatusType; name: string }> = [
   },
 ];
 
-export const ISSUE_PRIORITY: Array<{ id: IssuePriorityType; name: string }> = [
+export const ISSUE_PRIORITY: Array<{
+  id: IssuePriorityType;
+  name: string;
+}> = [
   {
     id: "low",
     name: "Low",

@@ -7,7 +7,8 @@ import { getIssues } from "@/services/issues";
 import { IssueStatusType, IssuePriorityType } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const IssuesList = () => {
   const searchParams = useSearchParams();
@@ -41,7 +42,11 @@ const IssuesList = () => {
   }
 
   if (isLoading) {
-    return <h1>Loading</h1>;
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <Skeleton className="h-[90%] w-[90%]" />
+      </div>
+    );
   }
 
   return (

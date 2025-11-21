@@ -1,7 +1,6 @@
 package seed
 
 import (
-	"fmt"
 	"kanban-board/db"
 
 	"github.com/go-faker/faker/v4"
@@ -20,9 +19,8 @@ func SeedUsers(gormDb *gorm.DB) error {
 			firstName := faker.FirstName()
 			lastName := faker.LastName()
 			users = append(users, &db.User{
-				ID:     uuid.New(),
-				Name:   firstName + " " + lastName,
-				Avatar: fmt.Sprintf("https://api.dicebear.com/7.x/avataaars/svg?seed=%s", firstName),
+				ID:   uuid.New(),
+				Name: firstName + " " + lastName,
 			})
 		}
 		gormDb.Create(users)
