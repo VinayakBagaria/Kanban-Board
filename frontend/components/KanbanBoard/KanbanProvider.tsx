@@ -1,3 +1,5 @@
+import { moveIssue } from "@/services/issues";
+import { IIssue, IssueStatusType } from "@/types/api";
 import {
   DndContext,
   DragEndEvent,
@@ -5,15 +7,13 @@ import {
   DragOverlay,
   DragStartEvent,
 } from "@dnd-kit/core";
-import { ReactNode, useEffect, useState } from "react";
-import KanbanColumn from "./KanbanColumn";
-import { ISSUE_STATUS } from "../constants";
-import { KanbanContext } from "./context";
-import { IIssue, IMoveIssueRequest, IssueStatusType } from "@/types/api";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useMutation } from "@tanstack/react-query";
-import { moveIssue } from "@/services/issues";
+import { useEffect, useState } from "react";
+import { ISSUE_STATUS } from "../constants";
 import EachIssue from "./EachIssue";
+import KanbanColumn from "./KanbanColumn";
+import { KanbanContext } from "./context";
 
 interface IKanbanProviderProps {
   issues: Array<IIssue>;
@@ -27,8 +27,8 @@ const KanbanProvider = ({ issues }: IKanbanProviderProps) => {
   });
 
   useEffect(() => {
-    setIssueList(issueList);
-  }, [issueList]);
+    setIssueList(issues);
+  }, [issues]);
 
   const issueByStatus = ISSUE_STATUS.reduce(
     (acc, status) => ({

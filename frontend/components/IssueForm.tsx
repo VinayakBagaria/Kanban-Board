@@ -16,7 +16,7 @@ import { getLabels } from "@/services/labels";
 import {
   ICreateIssueRequest,
   IssueStatusType,
-  PriorityType,
+  IssuePriorityType,
 } from "@/types/api";
 
 interface IIssueFormProps {
@@ -78,7 +78,7 @@ const IssueForm = ({ formData, updateFormData }: IIssueFormProps) => {
         <Select
           value={formData.priority || ""}
           onValueChange={(newValue) =>
-            updateFormData({ priority: newValue as PriorityType })
+            updateFormData({ priority: newValue as IssuePriorityType })
           }
         >
           <SelectTrigger>

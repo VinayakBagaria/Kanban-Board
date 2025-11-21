@@ -5,7 +5,7 @@ export type IssueStatusType =
   | "done"
   | "cancelled";
 
-export type PriorityType = "low" | "medium" | "high" | "critical";
+export type IssuePriorityType = "low" | "medium" | "high" | "critical";
 
 export interface IIssue {
   id: string;
@@ -15,7 +15,7 @@ export interface IIssue {
   description: string;
   status: IssueStatusType;
   order_index: number;
-  priority: PriorityType;
+  priority: IssuePriorityType;
   assignee_id: string | null;
   assignee: IAssignee | null;
   labels: Array<ILabel>;
@@ -42,7 +42,7 @@ export interface IIssueListRequest {
   status?: Array<IssueStatusType>;
   assignee?: string;
   labels?: string[];
-  priority?: Array<PriorityType>;
+  priority?: Array<IssuePriorityType>;
   page?: number;
   page_size?: number;
 }

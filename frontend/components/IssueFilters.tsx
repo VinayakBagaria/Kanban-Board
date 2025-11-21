@@ -1,17 +1,19 @@
+"use client";
+
 import { getLabels } from "@/services/labels";
 import { getUsers } from "@/services/users";
 import { useQuery } from "@tanstack/react-query";
+import { X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ISSUE_PRIORITY } from "./constants";
+import { Button } from "./ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { useRouter, useSearchParams } from "next/navigation";
-import { X } from "lucide-react";
-import { Button } from "../ui/button";
-import { ISSUE_PRIORITY } from "../constants";
+} from "./ui/select";
 
 const IssueFilters = () => {
   const searchParams = useSearchParams();
@@ -87,6 +89,7 @@ const IssueFilters = () => {
           <SelectValue placeholder="Filter by priority" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="all">All priorities</SelectItem>
           {ISSUE_PRIORITY.map((eachPriority) => (
             <SelectItem key={eachPriority.id} value={eachPriority.id}>
               {eachPriority.name}

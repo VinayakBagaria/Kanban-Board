@@ -10,27 +10,30 @@ import { fetchApi } from "./api";
 
 export function getIssues(params?: IIssueListRequest) {
   const searchParams = new URLSearchParams();
+
   if (params?.assignee) {
     searchParams.set("assignee", params.assignee);
   }
   if (params?.labels && params?.labels.length > 0) {
     params.labels.forEach((eachLabel) =>
-      searchParams.set("labels[]", eachLabel)
+      searchParams.append("labels[]", eachLabel)
     );
   }
   if (params?.priority && params?.priority.length > 0) {
     params.priority.forEach((eachPriority) =>
-      searchParams.set("priority[]", eachPriority)
+      searchParams.append("priority[]", eachPriority)
     );
   }
   if (params?.status && params?.status.length > 0) {
     params.status.forEach((eachStatus) =>
-      searchParams.set("status[]", eachStatus)
+      searchParams.append("status[]", eachStatus)
     );
   }
 
   const queryString = searchParams.toString();
-  return fetchApi<IPaginatedDataResponse<IIssue>>(`/issues?${queryString}`);
+  return fetchApi<IPaginatedDataResponse<IIssue>>(
+    queryString ? `/issues?${queryString}` : "/issues"
+  );
 }
 
 export function getIssue(id: string) {
