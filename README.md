@@ -116,4 +116,6 @@ The project contains basic tests to validate the working of our service, as this
 
 4. Optimizing backend queries: Listing issues & Get an issue APIs does 3 queries - fetching issues, fetching related users data, fetching related labels. These can be optimized into 1 query with joins.
 
-5. Accessibility: Keyboard control (Command + K) is implemented. Other basic accessibility and tab navigation works as part of shadcn/ui's inbuilt-offering. But there is scope to further make it more easier to navigate via keyboard. Loading screens and route switches can also be smoothened.
+5. UI flows: Although pagination is supported by backend, frontend doesn't utilize it as a proper flow of paginated Kanban board is hard to visualize as a product flow. Better skeletons can be used to optimize load time.
+
+6. Accessibility: Keyboard control (Command + K) is implemented. Other basic accessibility and tab navigation works as part of shadcn/ui's inbuilt-offering. But there is scope to further make it more easier to navigate via keyboard. Loading screens and route switches can also be smoothened.
