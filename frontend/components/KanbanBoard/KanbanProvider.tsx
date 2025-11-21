@@ -44,13 +44,16 @@ const KanbanProvider = ({ issues, isLoading }: IKanbanProviderProps) => {
   const activeIssue = issueList.find((eachIssue) => eachIssue.id == activeId);
 
   function handleDragStart(event: DragStartEvent) {
+    event.activatorEvent.preventDefault();
+    event.activatorEvent.stopPropagation();
     setActiveId(event.active.id as string);
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    event.activatorEvent.preventDefault();
+    event.activatorEvent.stopPropagation();
     setActiveId(null);
     const { active, over } = event;
-    console.log({ active, over });
     if (!over) {
       return;
     }

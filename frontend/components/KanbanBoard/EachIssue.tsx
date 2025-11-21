@@ -1,13 +1,12 @@
 import { IIssue } from "@/types/api";
-import { HolderOutlined } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useRouter } from "next/navigation";
 import PriorityIcon from "../PriorityIcon";
 import UserAvatar from "../UserDetails";
 import { ISSUE_PRIORITY } from "../constants";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
+import IssueMenu from "./IssueMenu";
 
 interface IEachIssueProps {
   issue: IIssue;
@@ -22,7 +21,6 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
     transition,
     isDragging,
   } = useSortable({ id: issue.id });
-  const router = useRouter();
 
   return (
     <Card
@@ -31,10 +29,11 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
         transform: CSS.Transform.toString(transform),
         transition,
       }}
-      onClick={() => router.push(`/issues/${issue.id}`)}
       className={`cursor-grab gap-4 rounded-md p-3 shadow-sm ${
         isDragging ? "opacity-30" : ""
       }`}
+      {...attributes}
+      {...listeners}
     >
       <p className="text-sm w-48 font-medium leading-snug text-gray-900">
         {issue.title}
@@ -68,11 +67,9 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
           </p>
           <PriorityIcon id={issue.priority} />
         </div>
-        <div className="flex justify-between gap-2">
-          <div {...attributes} {...listeners}>
-            <HolderOutlined />
-          </div>
+        <div className="flex justify-between items-center gap-1">
           {issue.assignee && <UserAvatar assignee={issue.assignee} />}
+          <IssueMenu issueId={issue.id} />
         </div>
       </div>
     </Card>
