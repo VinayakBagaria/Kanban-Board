@@ -75,7 +75,7 @@ const IssueFilters = () => {
           updateFilter("assignee", value === "all" ? null : value)
         }
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] cursor-pointer">
           <SelectValue placeholder="Filter by assignee" />
         </SelectTrigger>
         <SelectContent>
@@ -94,7 +94,7 @@ const IssueFilters = () => {
           updateFilter("priority", value === "all" ? null : value)
         }
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] cursor-pointer">
           <SelectValue placeholder="Filter by priority" />
         </SelectTrigger>
         <SelectContent>
