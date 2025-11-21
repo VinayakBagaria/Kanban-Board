@@ -3,9 +3,19 @@
 import { getLabels } from "@/services/labels";
 import { getUsers } from "@/services/users";
 import { useQuery } from "@tanstack/react-query";
+import { ChevronDownIcon, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ISSUE_PRIORITY } from "./constants";
 import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "./ui/menubar";
 import {
   Select,
   SelectContent,
@@ -13,20 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { CameraFilled, ProjectFilled } from "@ant-design/icons";
-import { ChevronDownIcon, X } from "lucide-react";
-import { Badge } from "./ui/badge";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "./ui/menubar";
-import { Label } from "./ui/label";
-import { Checkbox } from "./ui/checkbox";
 
 const IssueFilters = () => {
   const searchParams = useSearchParams();
@@ -113,7 +109,7 @@ const IssueFilters = () => {
 
       <Menubar>
         <MenubarMenu>
-          <MenubarTrigger className="w-[160] flex justify-between items-center">
+          <MenubarTrigger className="w-[160] flex justify-between items-center cursor-pointer font-normal">
             <div className="flex gap-1 items-center">
               Labels{" "}
               {selectedLabels.length > 0 && <p>({selectedLabels.length})</p>}
@@ -135,7 +131,12 @@ const IssueFilters = () => {
                   checked={selectedLabels.includes(eachLabel.id)}
                   className="cursor-pointer"
                 />
-                <Label htmlFor={eachLabel.id}>{eachLabel.name}</Label>
+                <Label
+                  className="font-normal cursor-pointer"
+                  htmlFor={eachLabel.id}
+                >
+                  {eachLabel.name}
+                </Label>
               </MenubarItem>
             ))}
           </MenubarContent>

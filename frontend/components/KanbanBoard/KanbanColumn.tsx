@@ -25,7 +25,7 @@ const KanbanColumn = ({ id, title }: IKanbanColumnProps) => {
 
   return (
     <div className="p-3 flex-1 bg-gray-100 rounded-lg" ref={setNodeRef}>
-      <CardHeader className="px-0 flex">
+      <CardHeader className="px-0 flex items-center">
         <CardTitle className="text-sm font-medium text-gray-900">
           {title}
         </CardTitle>

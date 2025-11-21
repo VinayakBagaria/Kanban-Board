@@ -7,6 +7,7 @@ import { ISSUE_PRIORITY } from "../constants";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 import IssueMenu from "./IssueMenu";
+import TooltipData from "../TooltipData";
 
 interface IEachIssueProps {
   issue: IIssue;
@@ -35,9 +36,11 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
       {...attributes}
       {...listeners}
     >
-      <p className="text-sm w-48 font-medium leading-snug text-gray-900">
-        {issue.title}
-      </p>
+      <TooltipData hover={issue.title}>
+        <p className="text-sm w-48 font-medium leading-snug text-gray-900 overflow-hidden text-ellipsis">
+          {issue.title}
+        </p>
+      </TooltipData>
 
       {issue.labels.length > 0 && (
         <div className="flex flex-wrap gap-2">

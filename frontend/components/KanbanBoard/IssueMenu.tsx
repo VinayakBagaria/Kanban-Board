@@ -26,7 +26,7 @@ const IssueMenu = ({ issueId }: IIssueMenuProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger className="cursor-pointer" asChild>
         <EllipsisVertical
           className="h-4"
           style={{ color: "oklch(44.6% 0.03 256.802)" }}
