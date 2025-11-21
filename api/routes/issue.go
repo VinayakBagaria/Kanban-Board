@@ -12,6 +12,6 @@ func NewIssueRoutes(handler resthandlers.IssueHandler) []*Route {
 		{Path: "/issues", Method: http.MethodPost, Handler: handler.CreateIssue},
 		{Path: "/issues/:id", Method: http.MethodPut, Handler: handler.UpdateIssue},
 		{Path: "/issues/:id", Method: http.MethodDelete, Handler: handler.DeleteIssue},
-		{Path: "/issues/:id/move-status", Method: http.MethodPatch, Handler: handler.MoveIssueStatus},
+		{Path: "/issues/:id/move", Method: http.MethodPatch, Handler: handler.MoveIssueStatus},
 	}
 }

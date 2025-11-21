@@ -1,20 +1,13 @@
 import { IIssue } from "@/types/api";
-import {
-  HolderOutlined,
-  LineChartOutlined,
-  LineOutlined,
-} from "@ant-design/icons";
+import { HolderOutlined } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useRouter } from "next/navigation";
-import { Avatar } from "../ui/avatar";
+import PriorityIcon from "../PriorityIcon";
+import UserAvatar from "../UserDetails";
+import { ISSUE_PRIORITY } from "../constants";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
-import { getInitials, getUserColor } from "@/utils/user";
-import UserAvatar from "../UserDetails";
-import PriorityIcon from "../PriorityIcon";
-import { ISSUE_PRIORITY } from "../constants";
 
 interface IEachIssueProps {
   issue: IIssue;

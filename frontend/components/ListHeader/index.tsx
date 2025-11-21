@@ -1,8 +1,10 @@
-import { Plus } from "lucide-react";
-import { Button } from "../ui/button";
-import { useState } from "react";
-import CreateIssueModal from "./CreateIssueModal";
 import { ProjectFilled } from "@ant-design/icons";
+import { Plus } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Suspense, useState } from "react";
+import { Button } from "../ui/button";
+
+const CreateIssueModal = dynamic(() => import("./CreateIssueModal"));
 
 const ListHeader = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -21,7 +23,12 @@ const ListHeader = () => {
           Create Issue
         </Button>
       </header>
-      {isCreateOpen && <CreateIssueModal onOpenChange={setIsCreateOpen} />}
+
+      {isCreateOpen && (
+        <Suspense>
+          <CreateIssueModal onOpenChange={setIsCreateOpen} />
+        </Suspense>
+      )}
     </>
   );
 };

@@ -62,7 +62,7 @@ export function deleteIssue(id: string) {
 
 export function moveIssue(data: IMoveIssueRequest) {
   const { id, ...restData } = data;
-  return fetchApi<IIssue>(`/issues/${id}/move-status`, {
+  return fetchApi<IIssue>(`/issues/${id}/move`, {
     method: "PATCH",
     body: JSON.stringify(restData),
   });
