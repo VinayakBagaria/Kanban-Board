@@ -1,5 +1,6 @@
 "use client";
 
+import CommandCenter from "@/components/CommandCenter";
 import IssueFilters from "@/components/IssueFilters";
 import KanbanProvider from "@/components/KanbanBoard/KanbanProvider";
 import ListHeader from "@/components/ListHeader";
@@ -7,7 +8,7 @@ import { getIssues } from "@/services/issues";
 import { IssuePriorityType, IssueStatusType } from "@/types/api";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 const IssuesList = () => {
   const searchParams = useSearchParams();
@@ -22,6 +23,7 @@ const IssuesList = () => {
     : undefined;
   const statusParam = searchParams.get("status");
   const statuses = statusParam ? [statusParam as IssueStatusType] : undefined;
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["issues", assignee, priorities, labels, statuses],
@@ -42,8 +44,12 @@ const IssuesList = () => {
 
   return (
     <div className="min-h-screen flex flex-col flex-1 min-w-0 bg-white overflow-hidden">
-      <ListHeader />
+      <ListHeader
+        isCreateOpen={isCreateOpen}
+        setIsCreateOpen={setIsCreateOpen}
+      />
       <IssueFilters />
+      <CommandCenter handleCreate={() => setIsCreateOpen(true)} />
       <div className="overflow-auto flex-1">
         <KanbanProvider issues={issues} isLoading={isLoading} />
       </div>
