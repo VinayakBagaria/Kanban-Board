@@ -42,9 +42,17 @@ const CreateIssueModal = ({ onOpenChange }: ICreateIssueModalProps) => {
     setFormData({ ...formData, ...updates });
   }
 
+  function handleSubmit() {
+    if (!formData.title.trim()) {
+      return;
+    }
+
+    createMutation.mutate(formData);
+  }
+
   return (
     <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] gap-8">
         <DialogHeader>
           <DialogTitle>Create New Issue</DialogTitle>
           <DialogDescription>
@@ -55,11 +63,10 @@ const CreateIssueModal = ({ onOpenChange }: ICreateIssueModalProps) => {
         <IssueForm formData={formData} updateFormData={updateFormData} />
 
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button
-            onClick={() => createMutation.mutate(formData)}
-            disabled={createMutation.isPending}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={createMutation.isPending}>
             {createMutation.isPending ? "Creating..." : "Create issue"}
           </Button>
         </DialogFooter>

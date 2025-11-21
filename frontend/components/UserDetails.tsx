@@ -2,11 +2,11 @@ import { IAssignee } from "@/types/api";
 import { getInitials, getUserColor } from "@/utils/user";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 
-interface IUserDetailsProps {
+interface IUserAvatarProps {
   assignee: IAssignee;
 }
 
-const UserDetails = ({ assignee }: IUserDetailsProps) => (
+const UserAvatar = ({ assignee }: IUserAvatarProps) => (
   <Avatar className="size-6">
     <AvatarFallback
       className="text-white text-xs"
@@ -17,4 +17,4 @@ const UserDetails = ({ assignee }: IUserDetailsProps) => (
   </Avatar>
 );
 
-export default UserDetails;
+export default UserAvatar;

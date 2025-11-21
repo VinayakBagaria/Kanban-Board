@@ -12,7 +12,7 @@ import { Avatar } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Card } from "../ui/card";
 import { getInitials, getUserColor } from "@/utils/user";
-import UserDetails from "../UserDetails";
+import UserAvatar from "../UserDetails";
 import PriorityIcon from "../PriorityIcon";
 import { ISSUE_PRIORITY } from "../constants";
 
@@ -79,7 +79,7 @@ const EachIssue = ({ issue }: IEachIssueProps) => {
           <div {...attributes} {...listeners}>
             <HolderOutlined />
           </div>
-          {issue.assignee && <UserDetails assignee={issue.assignee} />}
+          {issue.assignee && <UserAvatar assignee={issue.assignee} />}
         </div>
       </div>
     </Card>
