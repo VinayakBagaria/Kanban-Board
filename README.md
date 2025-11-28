@@ -35,7 +35,7 @@ Seed your database with some fake & random values:
 make seed
 ```
 
-Other commands for frequent usage can found inside the Makefile. Use the following command to list all possible ones with their descriptions.
+Other commands for frequent usage can be found inside the Makefile. Use the following command to list all possible ones with their descriptions.
 
 ```bash
 make help
@@ -60,11 +60,11 @@ Packages used in frontend with React JS:
 
 - GET [/healthcheck](http://localhost:8000/healthcheck) - Get server uptime metrics
 - GET [/api/issues](http://localhost:8000/api/issues) - Get issues list, as per filters
-- GET [/issues/<id>](http://localhost:8000/api/issues/issue1) - Get an issue details
+- GET [/issues/:id](http://localhost:8000/api/issues/issue1) - Get an issue details
 - POST [/api/issues](http://localhost:8000/api/issues) - Upload a new issue
-- PUT [/api/issues/<id>](http://localhost:8000/api/issues/issue1) - Updates an existing issue
-- DELETE [/issue/<id>](http://localhost:8000/api/issue/issue1) - Deletes an issue
-- PATCH [/issue/<id>/move](http://localhost:8000/api/issue/issue1/move) - Moves an issue from 1 status to another and/or changes its ordering in the new status
+- PUT [/api/issues/:id](http://localhost:8000/api/issues/issue1) - Updates an existing issue
+- DELETE [/issue/:id](http://localhost:8000/api/issue/issue1) - Deletes an issue
+- PATCH [/issue/:id/move](http://localhost:8000/api/issue/issue1/move) - Moves an issue from 1 status to another and/or changes its ordering in the new status
 - GET [/api/users](http://localhost:8000/api/users) - Returns a list of users
 - GET [/api/labels](http://localhost:8000/api/labels) - Returns a list of labels
 
